@@ -112,6 +112,7 @@ struct AddStationSheet: View {
         #if os(iOS)
         TextField("Callsign", text: $callsignInput)
             .textInputAutocapitalization(.characters)
+            .autocorrectionDisabled()
         #else
         TextField("Callsign", text: $callsignInput)
         #endif
@@ -122,12 +123,7 @@ struct AddStationSheet: View {
             Form {
                 Section("Identity") {
                     callsignField
-                        .autocorrectionDisabled()
-                        .onChange(of: callsignInput) { _, newValue in
-                            callsignInput = newValue.uppercased()
-                        }
                     TextField("Grid square (optional)", text: $gridInput)
-                        .autocorrectionDisabled()
                 }
                 Section("Notes") {
                     TextField("Notes", text: $notes, axis: .vertical)

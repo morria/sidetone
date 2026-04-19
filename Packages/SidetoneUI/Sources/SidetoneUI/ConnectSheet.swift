@@ -79,11 +79,8 @@ public struct ConnectSheet: View {
         TextField("Callsign", text: $targetInput)
             .textInputAutocapitalization(.characters)
             .autocorrectionDisabled()
-            .onChange(of: targetInput) { _, new in targetInput = new.uppercased() }
         #else
         TextField("Callsign", text: $targetInput)
-            .autocorrectionDisabled()
-            .onChange(of: targetInput) { _, new in targetInput = new.uppercased() }
         #endif
     }
 

@@ -29,6 +29,7 @@ public struct LocalSetupView: View {
         #if os(iOS)
         TextField("Callsign", text: $callsignInput)
             .textInputAutocapitalization(.characters)
+            .autocorrectionDisabled()
         #else
         TextField("Callsign", text: $callsignInput)
         #endif
@@ -38,17 +39,11 @@ public struct LocalSetupView: View {
         Form {
             Section("Station") {
                 callsignField
-                    .autocorrectionDisabled()
-                    .onChange(of: callsignInput) { _, new in
-                        callsignInput = new.uppercased()
-                    }
                 TextField("Grid (optional)", text: $gridInput)
-                    .autocorrectionDisabled()
             }
 
             Section("ardopcf") {
                 TextField("Host", text: $host)
-                    .autocorrectionDisabled()
                 TextField("Command port", text: $port)
                     #if os(iOS)
                     .keyboardType(.numberPad)
@@ -56,9 +51,12 @@ public struct LocalSetupView: View {
             }
 
             Button("Connect") {
+                // Callsign.init uppercases + validates; no need to
+                // mutate the text-field binding on every keystroke
+                // (that pattern breaks TextField focus on macOS).
                 guard let call = Callsign(callsignInput),
-                      let port = UInt16(port) else { return }
-                onSubmit(call, SidetoneCore.Grid(gridInput), host, port)
+                      let portNumber = UInt16(port) else { return }
+                onSubmit(call, SidetoneCore.Grid(gridInput), host, portNumber)
             }
             .disabled(Callsign(callsignInput) == nil || UInt16(port) == nil)
         }
