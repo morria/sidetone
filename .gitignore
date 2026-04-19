@@ -7,3 +7,6 @@ DerivedData/
 *.xcodeproj/project.xcworkspace/xcuserdata/
 *.xcworkspace/xcuserdata/
 xcuserdata/
+
+# Harness-local settings (Claude Code runtime state)
+.claude/
