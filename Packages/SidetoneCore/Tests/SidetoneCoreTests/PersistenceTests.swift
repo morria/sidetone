@@ -65,6 +65,17 @@ struct PersistenceStoreTests {
         #expect(try store.transcript(for: Callsign("B2BB")!).isEmpty)
     }
 
+    @Test("recentActivity returns messages newest-first across all peers")
+    func recentActivity() throws {
+        let store = try PersistenceStore(.inMemory)
+        try store.append(Message(timestamp: Date(timeIntervalSince1970: 100), direction: .sent, peer: Callsign("W1ABC")!, body: "first"))
+        try store.append(Message(timestamp: Date(timeIntervalSince1970: 200), direction: .received, peer: Callsign("K2DEF")!, body: "second"))
+        try store.append(Message(timestamp: Date(timeIntervalSince1970: 150), direction: .sent, peer: Callsign("W1ABC")!, body: "between"))
+
+        let recent = try store.recentActivity()
+        #expect(recent.map(\.body) == ["second", "between", "first"])
+    }
+
     @Test("transcript fetch limit is honored")
     func fetchLimit() throws {
         let store = try PersistenceStore(.inMemory)

@@ -34,8 +34,16 @@ public actor MockTNCServer {
     public nonisolated let receivedLines: AsyncStream<String>
     private nonisolated let _receivedLinesCont: AsyncStream<String>.Continuation
 
+    /// Every frame the client wrote to the data port, already unframed
+    /// (length prefix stripped). Parsed with ardopcf's outbound wire
+    /// format: `[2B BE length][bytes]`.
+    public nonisolated let receivedDataFrames: AsyncStream<Data>
+    private nonisolated let _receivedDataCont: AsyncStream<Data>.Continuation
+    private var dataPortBuffer: [UInt8] = []
+
     public init() {
         (receivedLines, _receivedLinesCont) = AsyncStream.makeStream(of: String.self)
+        (receivedDataFrames, _receivedDataCont) = AsyncStream.makeStream(of: Data.self)
     }
 
     /// Start listening on two ephemeral ports. Returns the port numbers so
@@ -131,7 +139,35 @@ public actor MockTNCServer {
     private func acceptData(_ connection: NWConnection) {
         dataConnection = connection
         connection.start(queue: .global(qos: .userInitiated))
+        receiveDataLoop(connection)
         if let c = dataReady { dataReady = nil; c.resume() }
+    }
+
+    private nonisolated func receiveDataLoop(_ connection: NWConnection) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 64 * 1024) { [weak self] content, _, isComplete, error in
+            if let data = content, !data.isEmpty {
+                Task { [weak self] in
+                    await self?.ingestDataPortBytes(Array(data))
+                }
+            }
+            if isComplete || error != nil { return }
+            self?.receiveDataLoop(connection)
+        }
+    }
+
+    private func ingestDataPortBytes(_ bytes: [UInt8]) {
+        dataPortBuffer.append(contentsOf: bytes)
+        // Parse [2-byte BE length][data] frames. ardopcf's data-port
+        // OUTBOUND format (host → TNC) has no tag. See
+        // TCPHostInterface.c::ProcessReceivedData.
+        while dataPortBuffer.count >= 2 {
+            let length = (Int(dataPortBuffer[0]) << 8) | Int(dataPortBuffer[1])
+            let needed = 2 + length
+            if dataPortBuffer.count < needed { return }
+            let payload = Data(dataPortBuffer[2..<needed])
+            dataPortBuffer.removeFirst(needed)
+            _receivedDataCont.yield(payload)
+        }
     }
 
     private nonisolated func receiveCommandLoop(_ connection: NWConnection) {

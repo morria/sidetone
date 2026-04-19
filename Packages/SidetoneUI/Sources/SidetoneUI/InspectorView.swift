@@ -28,6 +28,7 @@ public struct InspectorView: View {
                         .fill(state.ptt ? Color.red : Color.secondary.opacity(0.4))
                         .frame(width: 12, height: 12)
                         .animation(.easeInOut(duration: 0.1), value: state.ptt)
+                        .accessibilityLabel(state.ptt ? "Transmitting" : "Not transmitting")
                 }
                 HStack {
                     Text("Channel")

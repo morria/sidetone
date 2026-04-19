@@ -5,15 +5,24 @@ import SidetoneCore
 /// Remote-server setup (iOS/iPad Bonjour discovery) lives in a separate
 /// view built in M6 — this is the Mac/local path only.
 public struct LocalSetupView: View {
-    @State private var callsignInput = ""
-    @State private var gridInput = ""
-    @State private var host = "127.0.0.1"
-    @State private var port = "8515"
+    @State private var callsignInput: String
+    @State private var gridInput: String
+    @State private var host: String
+    @State private var port: String
 
     public var onSubmit: (Callsign, SidetoneCore.Grid?, String, UInt16) -> Void
 
-    public init(onSubmit: @escaping (Callsign, SidetoneCore.Grid?, String, UInt16) -> Void) {
+    public init(
+        onSubmit: @escaping (Callsign, SidetoneCore.Grid?, String, UInt16) -> Void,
+        defaults: SettingsDefaults = SettingsDefaults()
+    ) {
         self.onSubmit = onSubmit
+        // Pre-fill from the last successful setup so the operator
+        // doesn't have to re-enter their own callsign.
+        _callsignInput = State(initialValue: defaults.lastCallsign ?? "")
+        _gridInput = State(initialValue: defaults.lastGrid ?? "")
+        _host = State(initialValue: defaults.lastArdopcfHost ?? "127.0.0.1")
+        _port = State(initialValue: defaults.lastArdopcfPort.map(String.init) ?? "8515")
     }
 
     @ViewBuilder private var callsignField: some View {

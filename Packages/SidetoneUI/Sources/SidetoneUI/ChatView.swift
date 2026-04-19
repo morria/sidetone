@@ -1,10 +1,13 @@
 import SwiftUI
 import SidetoneCore
+import UniformTypeIdentifiers
 
 public struct ChatView: View {
     @Environment(AppState.self) private var state
     let peer: Callsign
     @State private var draft = ""
+    @State private var showingFilePicker = false
+    @State private var fileSendError: String?
     @FocusState private var composerFocused: Bool
 
     public init(peer: Callsign) {
@@ -13,6 +16,7 @@ public struct ChatView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
+            inFlightTransfersBanner
             transcript
             Divider()
             composer
@@ -21,6 +25,58 @@ public struct ChatView: View {
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
+        .fileImporter(
+            isPresented: $showingFilePicker,
+            allowedContentTypes: [.item],
+            allowsMultipleSelection: false
+        ) { result in
+            handlePickedFile(result)
+        }
+        .alert("Couldn't send file", isPresented: .constant(fileSendError != nil)) {
+            Button("OK") { fileSendError = nil }
+        } message: {
+            Text(fileSendError ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private var inFlightTransfersBanner: some View {
+        let transfers = state.fileTransfers.values.filter { $0.peer == peer && !$0.isComplete }
+        if !transfers.isEmpty {
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(Array(transfers), id: \.id) { transfer in
+                    HStack {
+                        Image(systemName: transfer.direction == .outbound ? "arrow.up.doc" : "arrow.down.doc")
+                        Text(transfer.filename).font(.caption.monospaced())
+                        Spacer()
+                        ProgressView(value: transfer.progress)
+                            .frame(width: 120)
+                    }
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 6)
+            .background(Color.accentColor.opacity(0.08))
+        }
+    }
+
+    private func handlePickedFile(_ result: Result<[URL], Error>) {
+        do {
+            guard let url = try result.get().first else { return }
+            let access = url.startAccessingSecurityScopedResource()
+            defer { if access { url.stopAccessingSecurityScopedResource() } }
+            let data = try Data(contentsOf: url)
+            if data.count > 512 * 1024 {
+                fileSendError = "File is \(data.count / 1024) KB. Over HF that will take a long time to send; split or shrink before attaching."
+                return
+            }
+            let filename = url.lastPathComponent
+            let mime = UTType(filenameExtension: url.pathExtension)?.preferredMIMEType
+                ?? "application/octet-stream"
+            Task { try? await state.sendFile(data: data, filename: filename, mimeType: mime) }
+        } catch {
+            fileSendError = error.localizedDescription
+        }
     }
 
     private var transcript: some View {
@@ -31,10 +87,13 @@ public struct ChatView: View {
                     MessageBubble(message: message)
                 }
                 if messages.isEmpty {
-                    Text("No messages yet.")
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.top, 40)
+                    ContentUnavailableView {
+                        Label("No messages", systemImage: "text.bubble")
+                    } description: {
+                        Text("When \(peer.value) answers, their traffic will appear here.")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 40)
                 }
             }
             .padding()
@@ -52,15 +111,24 @@ public struct ChatView: View {
                 Text("\(draft.count) chars")
                     .font(.caption.monospaced())
                     .foregroundStyle(draft.count > 512 ? .orange : .secondary)
+                    .accessibilityLabel("\(draft.count) characters typed")
                 Spacer()
+                Button {
+                    showingFilePicker = true
+                } label: {
+                    Label("Attach", systemImage: "paperclip")
+                }
+                .accessibilityHint("Attach and send a file to \(peer.value)")
                 Button("Ping") {
                     Task { try? await state.ping(peer) }
                 }
+                .accessibilityHint("Send a link-quality ping to \(peer.value)")
                 Button("Send") {
                     send()
                 }
                 .keyboardShortcut(.return, modifiers: .command)
                 .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .accessibilityHint("Send the composed message on the air")
             }
             .padding(.horizontal)
         }

@@ -112,6 +112,117 @@ struct LocalDriverTests {
         await server.stop()
     }
 
+    @Test("sendText writes payload on the data port framed [2B length][utf-8]")
+    func sendTextOverDataPort() async throws {
+        let (server, driver, _) = try await makeRig()
+        try await driver.connect()
+        await server.awaitClient()
+
+        try await server.emit("CONNECTED W1ABC 500")
+
+        // Wait for state to propagate to driver so sendText succeeds.
+        var stateAttempts = 0
+        while !isConnected(await driver.sessionState), stateAttempts < 100 {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+            stateAttempts += 1
+        }
+
+        try await driver.sendText("hello from brooklyn")
+
+        var iter = server.receivedDataFrames.makeAsyncIterator()
+        let payload = await iter.next()
+        #expect(payload == Data("hello from brooklyn".utf8))
+
+        await driver.shutdown()
+        await server.stop()
+    }
+
+    @Test("sendFile queues each chunk on the data port and emits progress")
+    func sendFileChunksOnDataPort() async throws {
+        let (server, driver, _) = try await makeRig()
+        try await driver.connect()
+        await server.awaitClient()
+
+        try await server.emit("CONNECTED W1ABC 500")
+        var stateAttempts = 0
+        while !isConnected(await driver.sessionState), stateAttempts < 100 {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+            stateAttempts += 1
+        }
+
+        let payload = Data((0..<1800).map { UInt8($0 & 0xff) })
+        Task { try? await driver.sendFile(data: payload, filename: "test.bin", mimeType: "application/octet-stream") }
+
+        var frames: [Data] = []
+        var iter = server.receivedDataFrames.makeAsyncIterator()
+        let expectedChunks = Int(ceil(Double(payload.count) / Double(FileChunker.defaultChunkPayload)))
+        for _ in 0..<expectedChunks {
+            if let frame = await iter.next() { frames.append(frame) }
+        }
+        #expect(frames.count == expectedChunks)
+
+        // Round-trip: decode each received SIDF frame and reassemble.
+        guard let (first, _) = try? FileChunkDecoder.decode(frames[0]) else {
+            Issue.record("first frame failed to decode"); return
+        }
+        var reassembler = FileReassembler(first: first)
+        for frame in frames.dropFirst() {
+            if let (chunk, _) = try? FileChunkDecoder.decode(frame) {
+                _ = reassembler.accept(chunk)
+            }
+        }
+        #expect(reassembler.assembled() == payload)
+
+        await driver.shutdown()
+        await server.stop()
+    }
+
+    @Test("ARQ frames carrying SIDF chunks surface as fileProgress + fileReceived")
+    func fileTransferInbound() async throws {
+        let (server, driver, _) = try await makeRig()
+        try await driver.connect()
+        await server.awaitClient()
+
+        // Seed the session peer so LocalDriver knows who sent the file.
+        try await server.emit("CONNECTED W1ABC 500")
+
+        var iter = driver.events.makeAsyncIterator()
+        // Drain until we hit .connected so currentPeer is set.
+        var connected = false
+        for _ in 0..<10 {
+            guard let ev = await iter.next() else { break }
+            if case .stateChanged(.connected) = ev { connected = true; break }
+        }
+        #expect(connected)
+
+        let payload = Data((0..<2600).map { UInt8($0 & 0xff) })
+        let chunks = FileChunker.chunk(
+            payload,
+            filename: "image.bin",
+            mimeType: "application/octet-stream",
+            chunkPayloadSize: 1000
+        )
+        for chunk in chunks {
+            try await server.emitFrame(tag: "ARQ", payload: FileChunkEncoder.encode(chunk))
+        }
+
+        var received: (FileTransfer, Data)?
+        for _ in 0..<20 {
+            guard let ev = await iter.next() else { break }
+            if case .fileReceived(let t, let data) = ev {
+                received = (t, data)
+                break
+            }
+        }
+
+        #expect(received?.0.filename == "image.bin")
+        #expect(received?.0.totalChunks == chunks.count)
+        #expect(received?.1 == payload)
+
+        await driver.shutdown()
+        await server.stop()
+    }
+
     @Test("initiateCall transitions to .connecting and sends ARQBW then ARQCALL")
     func initiateCall() async throws {
         let (server, driver, _) = try await makeRig()

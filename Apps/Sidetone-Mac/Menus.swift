@@ -1,19 +1,20 @@
 import SwiftUI
 import SidetoneCore
+import SidetoneUI
 
 /// Menu bar chrome per SPEC.md §Platform-specific chrome → Mac.
 ///
 /// Matches the spec's Connection / Radio / View menu layout as far as the
-/// current functionality reaches. Items that need M3+ (persistence) or
-/// M4+ (rigctld) are present but disabled for now, so the menu reads as
-/// complete to the user and we don't shuffle later.
+/// current functionality reaches. Items that need M4+ (rigctld) are
+/// present but disabled for now, so the menu reads as complete to the
+/// user and we don't shuffle later.
 struct SidetoneMenus: Commands {
     @Bindable var coordinator: AppCoordinator
 
     var body: some Commands {
         CommandMenu("Connection") {
             Button("Connect to Station…") {
-                // Wired in M3 once the station roster UI is in place.
+                coordinator.showingConnectSheet = true
             }
             .keyboardShortcut("k", modifiers: .command)
             .disabled(!coordinator.setupComplete)
@@ -35,11 +36,24 @@ struct SidetoneMenus: Commands {
             Toggle("Listen", isOn: listeningBinding)
                 .disabled(!coordinator.setupComplete)
 
+            Button("Ping…") {
+                coordinator.showingConnectSheet = true  // piggyback on same dialog
+            }
+            .keyboardShortcut("p", modifiers: [.command, .shift])
+            .disabled(!coordinator.setupComplete)
+
             Button("Send ID") {
                 // Hook into SessionDriver.sendID in a follow-up — driver
                 // protocol needs the method added first.
             }
             .disabled(!coordinator.setupComplete)
+        }
+
+        CommandMenu("View") {
+            Button("Activity Log…") {
+                coordinator.showingLog = true
+            }
+            .keyboardShortcut("l", modifiers: .command)
         }
 
         CommandMenu("Radio") {
@@ -49,6 +63,15 @@ struct SidetoneMenus: Commands {
                 .disabled(true)
             Button("Set mode…") {}
                 .disabled(true)
+        }
+
+        // Replace the default Help menu with our own so the link goes
+        // to the in-app help rather than a missing Apple help book.
+        CommandGroup(replacing: .help) {
+            Button("Sidetone Help") {
+                coordinator.showingHelp = true
+            }
+            .keyboardShortcut("?", modifiers: .command)
         }
     }
 

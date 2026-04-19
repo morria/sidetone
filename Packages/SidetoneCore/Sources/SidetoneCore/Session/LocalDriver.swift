@@ -19,6 +19,7 @@ public actor LocalDriver: SessionDriver {
     private var pumpTask: Task<Void, Never>?
     private var dataPumpTask: Task<Void, Never>?
     private var currentPeer: Callsign?
+    private var reassemblers: [UUID: FileReassembler] = [:]
 
     public init(tnc: TNCClient, myCall: Callsign, grid: Grid?) {
         self.tnc = tnc
@@ -53,15 +54,44 @@ public actor LocalDriver: SessionDriver {
         guard case .connected(let peer, _, _) = sessionState else {
             throw DriverError.notInSession
         }
-        // Text over ARDOP is just bytes written to the TNC's outbound buffer
-        // on the command socket via the plain TCP channel. ardopcf reads
-        // from that same socket and forwards to the ARQ connection. The
-        // spec's host interface uses a direct write of the text — no length
-        // prefix, no framing — terminated however the TNC expects (no
-        // terminator is added by us here).
-        try await tnc.sendRawLine(body)
+        // Outbound text goes on the DATA port (default 8516), framed as
+        // [2B BE length][bytes]. See ardopcf's TCPHostInterface.c —
+        // the command port is strictly for control, not payload.
+        try await tnc.sendArqData(Data(body.utf8))
         let msg = Message(direction: .sent, peer: peer, body: body)
         eventContinuation.yield(.messageSent(msg))
+    }
+
+    /// Chunk a file and queue each chunk as an ARQ payload. Emits
+    /// `fileProgress` events after each chunk clears the data socket.
+    ///
+    /// This pushes chunks as fast as the TNC's buffer will take them;
+    /// ardopcf emits BUFFER events we already forward, so a UI layer
+    /// can throttle the uploader against the TX buffer depth if needed.
+    /// Resume on reconnect is NOT implemented here yet — the receiving
+    /// side's `FileReassembler` supports it, so adding resume is a
+    /// matter of persisting which chunk seqs have been acked.
+    public func sendFile(data: Data, filename: String, mimeType: String) async throws {
+        guard case .connected(let peer, _, _) = sessionState else {
+            throw DriverError.notInSession
+        }
+        let chunks = FileChunker.chunk(data, filename: filename, mimeType: mimeType)
+        var transfer = FileTransfer(
+            id: chunks[0].id,
+            filename: filename,
+            mimeType: mimeType,
+            totalBytes: data.count,
+            totalChunks: chunks.count,
+            direction: .outbound,
+            peer: peer
+        )
+        for chunk in chunks {
+            let encoded = FileChunkEncoder.encode(chunk)
+            try await tnc.sendArqData(encoded)
+            transfer.chunksCompleted.insert(chunk.seq)
+            if transfer.isComplete { transfer.completedAt = Date() }
+            eventContinuation.yield(.fileProgress(transfer))
+        }
     }
 
     public func ping(_ peer: Callsign, repeats: Int) async throws {
@@ -152,8 +182,16 @@ public actor LocalDriver: SessionDriver {
     private func handle(frame: DataFrame) {
         switch frame.kind {
         case .arq, .fec:
-            guard let peer = currentPeer,
-                  let text = String(data: frame.payload, encoding: .utf8) else { return }
+            guard let peer = currentPeer else { return }
+            // Demux: payloads starting with our SIDF magic are binary
+            // file chunks. Everything else is UTF-8 text. The magic is
+            // 4 well-defined bytes; collision with any realistic HF
+            // keyboard-chat payload is effectively zero.
+            if frame.payload.count >= 4, Array(frame.payload.prefix(4)) == FileChunk.magic {
+                handleFileChunk(frame.payload, peer: peer)
+                return
+            }
+            guard let text = String(data: frame.payload, encoding: .utf8) else { return }
             let msg = Message(direction: .received, peer: peer, body: text)
             eventContinuation.yield(.messageReceived(msg))
         case .idf:
@@ -171,6 +209,42 @@ public actor LocalDriver: SessionDriver {
             }
         case .unknown:
             break
+        }
+    }
+
+    private func handleFileChunk(_ data: Data, peer: Callsign) {
+        guard let (chunk, _) = try? FileChunkDecoder.decode(data) else {
+            // Malformed SIDF frame — don't crash the session, but do
+            // surface it so the UI can log that something went wrong.
+            eventContinuation.yield(.fault("Malformed file-transfer chunk from \(peer.value)"))
+            return
+        }
+
+        var reassembler: FileReassembler
+        if var existing = reassemblers[chunk.id] {
+            _ = existing.accept(chunk)
+            reassembler = existing
+        } else {
+            reassembler = FileReassembler(first: chunk)
+        }
+        reassemblers[chunk.id] = reassembler
+
+        let transfer = FileTransfer(
+            id: reassembler.id,
+            filename: reassembler.filename,
+            mimeType: reassembler.mimeType,
+            totalBytes: reassembler.totalBytes,
+            totalChunks: reassembler.total,
+            direction: .inbound,
+            peer: peer,
+            chunksCompleted: Set(reassembler.chunks.keys),
+            completedAt: reassembler.isComplete ? Date() : nil
+        )
+        eventContinuation.yield(.fileProgress(transfer))
+
+        if reassembler.isComplete, let payload = reassembler.assembled() {
+            reassemblers.removeValue(forKey: chunk.id)
+            eventContinuation.yield(.fileReceived(transfer, payload: payload))
         }
     }
 }

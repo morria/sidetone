@@ -121,4 +121,14 @@ public final class PersistenceStore {
         )
         try context.save()
     }
+
+    /// Recent messages across all peers, newest first. For the QSO log
+    /// screen and the `GET /api/v1/log` endpoint.
+    public func recentActivity(limit: Int = 200) throws -> [Message] {
+        var descriptor = FetchDescriptor<PersistedMessage>(
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        descriptor.fetchLimit = limit
+        return try context.fetch(descriptor).compactMap(\.asValue)
+    }
 }

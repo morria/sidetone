@@ -19,6 +19,7 @@ public protocol SessionDriver: Actor {
     func connect() async throws
     func initiateCall(to peer: Callsign, bandwidth: ARQBandwidth, repeats: Int) async throws
     func sendText(_ body: String) async throws
+    func sendFile(data: Data, filename: String, mimeType: String) async throws
     func ping(_ peer: Callsign, repeats: Int) async throws
     func setListen(_ enabled: Bool) async throws
     func hangup(graceful: Bool) async throws
@@ -38,4 +39,10 @@ public enum SessionEvent: Sendable, Equatable {
     case buffer(Int)
     case fault(String)
     case heard(Callsign, grid: Grid?)
+    /// File-transfer progress update. `FileTransfer.isComplete` tells
+    /// the consumer whether payload is final.
+    case fileProgress(FileTransfer)
+    /// A fully-reassembled inbound file; the payload data is attached.
+    /// Emitted exactly once per transfer after all chunks arrive.
+    case fileReceived(FileTransfer, payload: Data)
 }

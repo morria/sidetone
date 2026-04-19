@@ -21,6 +21,7 @@ public final class AppState {
     public private(set) var busy: Bool = false
     public private(set) var bufferBytes: Int = 0
     public private(set) var lastFault: String?
+    public private(set) var fileTransfers: [UUID: FileTransfer] = [:]
 
     public var myCall: Callsign? { driver?.identity.callsign }
     public var myGrid: Grid? { driver?.identity.grid }
@@ -90,6 +91,11 @@ public final class AppState {
         try await handle.driver.sendText(body)
     }
 
+    public func sendFile(data: Data, filename: String, mimeType: String) async throws {
+        guard let handle = driver else { return }
+        try await handle.driver.sendFile(data: data, filename: filename, mimeType: mimeType)
+    }
+
     public func ping(_ peer: Callsign, repeats: Int = 3) async throws {
         guard let handle = driver else { return }
         try await handle.driver.ping(peer, repeats: repeats)
@@ -143,6 +149,10 @@ public final class AppState {
                 stations[idx] = saved
                 try? store?.saveStation(saved)
             }
+        case .fileProgress(let transfer):
+            fileTransfers[transfer.id] = transfer
+        case .fileReceived(let transfer, _):
+            fileTransfers[transfer.id] = transfer
         }
     }
 

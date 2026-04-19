@@ -109,6 +109,26 @@ public actor TNCClient {
         try await Self.send(cmd, data: Data(trimmed.utf8))
     }
 
+    /// Send bytes for ardopcf to transmit over ARQ (or FEC if the TNC
+    /// is in that mode). Written to the data socket framed as
+    /// `[2-byte BE length][data]` per `ProcessReceivedData` in
+    /// ardopcf's TCPHostInterface.c. Length limit: 65535 bytes per
+    /// call; larger payloads must be chunked by the caller.
+    public func sendArqData(_ bytes: Data) async throws {
+        guard let data = dataConnection, status == .connected else {
+            throw ConnectionError.notConnected
+        }
+        guard bytes.count <= Int(UInt16.max) else {
+            throw ConnectionError.writeFailed("ARQ data frame exceeds UInt16 length")
+        }
+        var framed = Data(capacity: bytes.count + 2)
+        let length = UInt16(bytes.count)
+        framed.append(UInt8(length >> 8))
+        framed.append(UInt8(length & 0xff))
+        framed.append(bytes)
+        try await Self.send(data, data: framed)
+    }
+
     public func disconnect() async {
         await teardown()
         status = .disconnected
