@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		726D4D442F950A1700598BED /* SidetoneCore in Frameworks */ = {isa = PBXBuildFile; productRef = 726D4D432F950A1700598BED /* SidetoneCore */; };
+		726D4D462F950A1700598BED /* SidetoneServer in Frameworks */ = {isa = PBXBuildFile; productRef = 726D4D452F950A1700598BED /* SidetoneServer */; };
+		726D4D482F950A1700598BED /* SidetoneTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 726D4D472F950A1700598BED /* SidetoneTestSupport */; };
+		726D4D4A2F950A1700598BED /* SidetoneUI in Frameworks */ = {isa = PBXBuildFile; productRef = 726D4D492F950A1700598BED /* SidetoneUI */; };
+		726D4D782F950CD900598BED /* SidetoneCore in Frameworks */ = {isa = PBXBuildFile; productRef = 726D4D772F950CD900598BED /* SidetoneCore */; };
+		726D4D7A2F950CDD00598BED /* SidetoneUI in Frameworks */ = {isa = PBXBuildFile; productRef = 726D4D792F950CDD00598BED /* SidetoneUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		725B33F72F94EAF100EE68CB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,12 +30,29 @@
 			remoteGlobalIDString = 725B33E82F94EAEF00EE68CB;
 			remoteInfo = Sidetone;
 		};
+		726D4D5C2F950AB600598BED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 725B33E12F94EAEF00EE68CB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 726D4D4E2F950AB400598BED;
+			remoteInfo = SidetoneMobile;
+		};
+		726D4D662F950AB600598BED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 725B33E12F94EAEF00EE68CB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 726D4D4E2F950AB400598BED;
+			remoteInfo = SidetoneMobile;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		725B33E92F94EAEF00EE68CB /* Sidetone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sidetone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		725B33F62F94EAF100EE68CB /* SidetoneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SidetoneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		725B34002F94EAF100EE68CB /* SidetoneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SidetoneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		726D4D4F2F950AB400598BED /* SidetoneMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SidetoneMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		726D4D5B2F950AB600598BED /* SidetoneMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SidetoneMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		726D4D652F950AB600598BED /* SidetoneMobileUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SidetoneMobileUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -45,6 +71,21 @@
 			path = SidetoneUITests;
 			sourceTree = "<group>";
 		};
+		726D4D502F950AB400598BED /* SidetoneMobile */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SidetoneMobile;
+			sourceTree = "<group>";
+		};
+		726D4D5E2F950AB600598BED /* SidetoneMobileTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SidetoneMobileTests;
+			sourceTree = "<group>";
+		};
+		726D4D682F950AB600598BED /* SidetoneMobileUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SidetoneMobileUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +93,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				726D4D462F950A1700598BED /* SidetoneServer in Frameworks */,
+				726D4D4A2F950A1700598BED /* SidetoneUI in Frameworks */,
+				726D4D442F950A1700598BED /* SidetoneCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,10 +103,34 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				726D4D482F950A1700598BED /* SidetoneTestSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		725B33FD2F94EAF100EE68CB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D4C2F950AB400598BED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				726D4D782F950CD900598BED /* SidetoneCore in Frameworks */,
+				726D4D7A2F950CDD00598BED /* SidetoneUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D582F950AB600598BED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D622F950AB600598BED /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -78,6 +146,10 @@
 				725B33EB2F94EAEF00EE68CB /* Sidetone */,
 				725B33F92F94EAF100EE68CB /* SidetoneTests */,
 				725B34032F94EAF100EE68CB /* SidetoneUITests */,
+				726D4D502F950AB400598BED /* SidetoneMobile */,
+				726D4D5E2F950AB600598BED /* SidetoneMobileTests */,
+				726D4D682F950AB600598BED /* SidetoneMobileUITests */,
+				726D4D762F950CD900598BED /* Frameworks */,
 				725B33EA2F94EAEF00EE68CB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,8 +160,18 @@
 				725B33E92F94EAEF00EE68CB /* Sidetone.app */,
 				725B33F62F94EAF100EE68CB /* SidetoneTests.xctest */,
 				725B34002F94EAF100EE68CB /* SidetoneUITests.xctest */,
+				726D4D4F2F950AB400598BED /* SidetoneMobile.app */,
+				726D4D5B2F950AB600598BED /* SidetoneMobileTests.xctest */,
+				726D4D652F950AB600598BED /* SidetoneMobileUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		726D4D762F950CD900598BED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +194,9 @@
 			);
 			name = Sidetone;
 			packageProductDependencies = (
+				726D4D432F950A1700598BED /* SidetoneCore */,
+				726D4D452F950A1700598BED /* SidetoneServer */,
+				726D4D492F950A1700598BED /* SidetoneUI */,
 			);
 			productName = Sidetone;
 			productReference = 725B33E92F94EAEF00EE68CB /* Sidetone.app */;
@@ -135,6 +220,7 @@
 			);
 			name = SidetoneTests;
 			packageProductDependencies = (
+				726D4D472F950A1700598BED /* SidetoneTestSupport */,
 			);
 			productName = SidetoneTests;
 			productReference = 725B33F62F94EAF100EE68CB /* SidetoneTests.xctest */;
@@ -163,6 +249,76 @@
 			productReference = 725B34002F94EAF100EE68CB /* SidetoneUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		726D4D4E2F950AB400598BED /* SidetoneMobile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 726D4D6D2F950AB600598BED /* Build configuration list for PBXNativeTarget "SidetoneMobile" */;
+			buildPhases = (
+				726D4D4B2F950AB400598BED /* Sources */,
+				726D4D4C2F950AB400598BED /* Frameworks */,
+				726D4D4D2F950AB400598BED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				726D4D502F950AB400598BED /* SidetoneMobile */,
+			);
+			name = SidetoneMobile;
+			packageProductDependencies = (
+				726D4D772F950CD900598BED /* SidetoneCore */,
+				726D4D792F950CDD00598BED /* SidetoneUI */,
+			);
+			productName = SidetoneMobile;
+			productReference = 726D4D4F2F950AB400598BED /* SidetoneMobile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		726D4D5A2F950AB600598BED /* SidetoneMobileTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 726D4D702F950AB600598BED /* Build configuration list for PBXNativeTarget "SidetoneMobileTests" */;
+			buildPhases = (
+				726D4D572F950AB600598BED /* Sources */,
+				726D4D582F950AB600598BED /* Frameworks */,
+				726D4D592F950AB600598BED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				726D4D5D2F950AB600598BED /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				726D4D5E2F950AB600598BED /* SidetoneMobileTests */,
+			);
+			name = SidetoneMobileTests;
+			packageProductDependencies = (
+			);
+			productName = SidetoneMobileTests;
+			productReference = 726D4D5B2F950AB600598BED /* SidetoneMobileTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		726D4D642F950AB600598BED /* SidetoneMobileUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 726D4D732F950AB600598BED /* Build configuration list for PBXNativeTarget "SidetoneMobileUITests" */;
+			buildPhases = (
+				726D4D612F950AB600598BED /* Sources */,
+				726D4D622F950AB600598BED /* Frameworks */,
+				726D4D632F950AB600598BED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				726D4D672F950AB600598BED /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				726D4D682F950AB600598BED /* SidetoneMobileUITests */,
+			);
+			name = SidetoneMobileUITests;
+			packageProductDependencies = (
+			);
+			productName = SidetoneMobileUITests;
+			productReference = 726D4D652F950AB600598BED /* SidetoneMobileUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -184,6 +340,17 @@
 						CreatedOnToolsVersion = 26.4.1;
 						TestTargetID = 725B33E82F94EAEF00EE68CB;
 					};
+					726D4D4E2F950AB400598BED = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
+					726D4D5A2F950AB600598BED = {
+						CreatedOnToolsVersion = 26.4.1;
+						TestTargetID = 726D4D4E2F950AB400598BED;
+					};
+					726D4D642F950AB600598BED = {
+						CreatedOnToolsVersion = 26.4.1;
+						TestTargetID = 726D4D4E2F950AB400598BED;
+					};
 				};
 			};
 			buildConfigurationList = 725B33E42F94EAEF00EE68CB /* Build configuration list for PBXProject "Sidetone" */;
@@ -195,6 +362,9 @@
 			);
 			mainGroup = 725B33E02F94EAEF00EE68CB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				726D4D422F950A1700598BED /* XCLocalSwiftPackageReference "../sidetone" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 725B33EA2F94EAEF00EE68CB /* Products */;
 			projectDirPath = "";
@@ -203,6 +373,9 @@
 				725B33E82F94EAEF00EE68CB /* Sidetone */,
 				725B33F52F94EAF100EE68CB /* SidetoneTests */,
 				725B33FF2F94EAF100EE68CB /* SidetoneUITests */,
+				726D4D4E2F950AB400598BED /* SidetoneMobile */,
+				726D4D5A2F950AB600598BED /* SidetoneMobileTests */,
+				726D4D642F950AB600598BED /* SidetoneMobileUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -223,6 +396,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		725B33FE2F94EAF100EE68CB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D4D2F950AB400598BED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D592F950AB600598BED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D632F950AB600598BED /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +447,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		726D4D4B2F950AB400598BED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D572F950AB600598BED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726D4D612F950AB600598BED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +480,16 @@
 			isa = PBXTargetDependency;
 			target = 725B33E82F94EAEF00EE68CB /* Sidetone */;
 			targetProxy = 725B34012F94EAF100EE68CB /* PBXContainerItemProxy */;
+		};
+		726D4D5D2F950AB600598BED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 726D4D4E2F950AB400598BED /* SidetoneMobile */;
+			targetProxy = 726D4D5C2F950AB600598BED /* PBXContainerItemProxy */;
+		};
+		726D4D672F950AB600598BED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 726D4D4E2F950AB400598BED /* SidetoneMobile */;
+			targetProxy = 726D4D662F950AB600598BED /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -533,6 +758,167 @@
 			};
 			name = Release;
 		};
+		726D4D6E2F950AB600598BED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7Q2SS8772K;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.w2asm.SidetoneMobile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		726D4D6F2F950AB600598BED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7Q2SS8772K;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.w2asm.SidetoneMobile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		726D4D712F950AB600598BED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7Q2SS8772K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.w2asm.SidetoneMobileTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SidetoneMobile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SidetoneMobile";
+			};
+			name = Debug;
+		};
+		726D4D722F950AB600598BED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7Q2SS8772K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.w2asm.SidetoneMobileTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SidetoneMobile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SidetoneMobile";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		726D4D742F950AB600598BED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7Q2SS8772K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.w2asm.SidetoneMobileUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SidetoneMobile;
+			};
+			name = Debug;
+		};
+		726D4D752F950AB600598BED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7Q2SS8772K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.w2asm.SidetoneMobileUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SidetoneMobile;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -572,7 +958,70 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		726D4D6D2F950AB600598BED /* Build configuration list for PBXNativeTarget "SidetoneMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				726D4D6E2F950AB600598BED /* Debug */,
+				726D4D6F2F950AB600598BED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		726D4D702F950AB600598BED /* Build configuration list for PBXNativeTarget "SidetoneMobileTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				726D4D712F950AB600598BED /* Debug */,
+				726D4D722F950AB600598BED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		726D4D732F950AB600598BED /* Build configuration list for PBXNativeTarget "SidetoneMobileUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				726D4D742F950AB600598BED /* Debug */,
+				726D4D752F950AB600598BED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		726D4D422F950A1700598BED /* XCLocalSwiftPackageReference "../sidetone" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../sidetone;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		726D4D432F950A1700598BED /* SidetoneCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SidetoneCore;
+		};
+		726D4D452F950A1700598BED /* SidetoneServer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SidetoneServer;
+		};
+		726D4D472F950A1700598BED /* SidetoneTestSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SidetoneTestSupport;
+		};
+		726D4D492F950A1700598BED /* SidetoneUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SidetoneUI;
+		};
+		726D4D772F950CD900598BED /* SidetoneCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 726D4D422F950A1700598BED /* XCLocalSwiftPackageReference "../sidetone" */;
+			productName = SidetoneCore;
+		};
+		726D4D792F950CDD00598BED /* SidetoneUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 726D4D422F950A1700598BED /* XCLocalSwiftPackageReference "../sidetone" */;
+			productName = SidetoneUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 725B33E12F94EAEF00EE68CB /* Project object */;
 }

@@ -56,7 +56,8 @@ let package = Package(
         .executableTarget(
             name: "SidetoneMac",
             dependencies: ["SidetoneCore", "SidetoneServer", "SidetoneUI"],
-            path: "Apps/Sidetone-Mac",
+            path: "Sidetone",
+            exclude: ["Assets.xcassets"],
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),
         .testTarget(
