@@ -43,7 +43,7 @@ final class WebSocketBroadcaster: @unchecked Sendable {
 
     func deregister(_ channel: Channel) {
         state.withLock { state in
-            state.channels.removeValue(forKey: ObjectIdentifier(channel))
+            _ = state.channels.removeValue(forKey: ObjectIdentifier(channel))
         }
     }
 
