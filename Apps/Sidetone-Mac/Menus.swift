@@ -1,0 +1,70 @@
+import SwiftUI
+import SidetoneCore
+
+/// Menu bar chrome per SPEC.md §Platform-specific chrome → Mac.
+///
+/// Matches the spec's Connection / Radio / View menu layout as far as the
+/// current functionality reaches. Items that need M3+ (persistence) or
+/// M4+ (rigctld) are present but disabled for now, so the menu reads as
+/// complete to the user and we don't shuffle later.
+struct SidetoneMenus: Commands {
+    @Bindable var coordinator: AppCoordinator
+
+    var body: some Commands {
+        CommandMenu("Connection") {
+            Button("Connect to Station…") {
+                // Wired in M3 once the station roster UI is in place.
+            }
+            .keyboardShortcut("k", modifiers: .command)
+            .disabled(!coordinator.setupComplete)
+
+            Button("Disconnect") {
+                Task { try? await coordinator.state.hangup(graceful: true) }
+            }
+            .keyboardShortcut("d", modifiers: .command)
+            .disabled(!canHangup(coordinator.state.sessionState))
+
+            Button("Abort") {
+                Task { try? await coordinator.state.hangup(graceful: false) }
+            }
+            .keyboardShortcut(".", modifiers: .command)
+            .disabled(!canHangup(coordinator.state.sessionState))
+
+            Divider()
+
+            Toggle("Listen", isOn: listeningBinding)
+                .disabled(!coordinator.setupComplete)
+
+            Button("Send ID") {
+                // Hook into SessionDriver.sendID in a follow-up — driver
+                // protocol needs the method added first.
+            }
+            .disabled(!coordinator.setupComplete)
+        }
+
+        CommandMenu("Radio") {
+            Button("Tune…") {}
+                .disabled(true)
+            Button("Set frequency…") {}
+                .disabled(true)
+            Button("Set mode…") {}
+                .disabled(true)
+        }
+    }
+
+    private func canHangup(_ s: SessionState) -> Bool {
+        switch s {
+        case .connected, .connecting, .listening: true
+        default: false
+        }
+    }
+
+    private var listeningBinding: Binding<Bool> {
+        Binding(
+            get: { if case .listening = coordinator.state.sessionState { true } else { false } },
+            set: { newValue in
+                Task { try? await coordinator.state.toggleListen(newValue) }
+            }
+        )
+    }
+}
